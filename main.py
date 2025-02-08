@@ -1,6 +1,6 @@
 import csv
 from openpyxl import Workbook
-from openpyxl.styles import Font
+from openpyxl.styles import Font, Alignment
 import random
 import time
 
@@ -20,6 +20,7 @@ turmas = ["t1.csv", "t2.csv"]
 
 
 turmas = {list(turmas)[i]: [] for i in range(len(turmas))} # cria um array vazio para cada turma
+stats = {list(turmas)[i]: {j:0 for j in range(1 , len(lugares.keys())+1)} for i in range(len(turmas))}
 
 def salvarComoPlanilha():
     wb = Workbook()
@@ -36,8 +37,21 @@ def salvarComoPlanilha():
             for i in range(0, len(alunos)):
                 ws.cell(row=i+2, column=coluna).value = alunos[i]
 
-    wb.save("saida.xlsx")
+    ws = wb.create_sheet("stats")
 
+    ws.cell(row=1, column=1).value = "Prioridades/Repetições"
+    for i in range(1 , len(lugares.keys())+1):
+        ws.cell(row=i+1, column=1).value = i
+
+    for turma, ps in stats.items():
+        coluna = list(stats.keys()).index(turma) + 2
+        ws.cell(row=1, column=coluna).value = turma
+
+        valores = list(ps.values())
+        for i in range(0, len(valores)):
+            ws.cell(row=i+2, column=coluna).value = valores[i]
+
+    wb.save("saida.xlsx")
 
 for turma in turmas.keys():
     divisao = {list(lugares.keys())[i]: [] for i in range(len(lugares.keys()))} # # cria um array vazio para cada lugar
@@ -61,6 +75,7 @@ for turma in turmas.keys():
                 temVaga = True if len(divisao[lugar]) < lugares[lugar] else False
                 if (temVaga):
                     divisao[lugar].append(aluno[0])
+                    stats[turma][i] += 1
                     break # achou vaga, sai do loop
 
     turmas[turma] = divisao
