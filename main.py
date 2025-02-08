@@ -1,5 +1,6 @@
 import csv
-from xlwt import Workbook 
+from openpyxl import Workbook
+from openpyxl.styles import Font
 
 lugares = {
     "Heitor Beltrão": 8,
@@ -11,19 +12,33 @@ lugares = {
 
 turmas = ["t1.csv", "t2.csv"]
 
+
+turmas = {list(turmas)[i]: [] for i in range(len(turmas))} # cria um array vazio para cada turma
+
 def salvarComoPlanilha():
-    pass
+    wb = Workbook()
+    wb.remove(wb.active)
+    for turma, divisao in turmas.items():
+        ws = wb.create_sheet(turma)
+        
+        for lugar, alunos in divisao.items():
+            coluna = list(divisao.keys()).index(lugar) + 1
+            celulaLugar = ws.cell(row=1, column=coluna)
+            celulaLugar.value = lugar
+            celulaLugar.font = Font(color = "FF0000")
+
+            for i in range(0, len(alunos)):
+                ws.cell(row=i+2, column=coluna).value = alunos[i]
+
+    wb.save("saida.xlsx")
 
 
-for turma in turmas:
-    divisao = {} # "Heitor Beltrão": ["Fulano", "Cicrano", ...], "Felippe Cardoso" : ["Beltrano", ...]
-    for l in lugares.keys():
-        divisao[l] = [] # criando as chaves
-    print(divisao)
+for turma in turmas.keys():
+    divisao = {list(lugares.keys())[i]: [] for i in range(len(lugares.keys()))} # # cria um array vazio para cada lugar
+    
     with open(turma) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         for row in csv_reader:
-            pass
             prioridades = row[1:len(lugares.keys())+1] # vem umas colunas em branco que podem atrapalhar
             prioridades = list(map(int, prioridades)) # transformando em numero
             
@@ -34,5 +49,6 @@ for turma in turmas:
                 if (temVaga):
                     divisao[lugar].append(row[0])
                     break # achou vaga, sai do loop
-    print(divisao)
-    salvarComoPlanilha()
+    turmas[turma] = divisao
+
+salvarComoPlanilha()
