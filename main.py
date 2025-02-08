@@ -1,6 +1,12 @@
 import csv
 from openpyxl import Workbook
 from openpyxl.styles import Font
+import random
+import time
+
+seed = time.time()
+random.seed(seed)
+print(seed)
 
 lugares = {
     "Heitor Beltrão": 8,
@@ -38,8 +44,15 @@ for turma in turmas.keys():
     
     with open(turma) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
+        alunos = []
+
         for row in csv_reader:
-            prioridades = row[1:len(lugares.keys())+1] # vem umas colunas em branco que podem atrapalhar
+            alunos.append(row)
+
+        random.shuffle(alunos)
+
+        for aluno in alunos:
+            prioridades = aluno[1:len(lugares.keys())+1] # vem umas colunas em branco que podem atrapalhar
             prioridades = list(map(int, prioridades)) # transformando em numero
             
             for i in range(1, len(lugares.keys()) + 1): # loopando sobre as prioridades ate achar
@@ -47,8 +60,9 @@ for turma in turmas.keys():
                 lugar = list(lugares.keys())[index]
                 temVaga = True if len(divisao[lugar]) < lugares[lugar] else False
                 if (temVaga):
-                    divisao[lugar].append(row[0])
+                    divisao[lugar].append(aluno[0])
                     break # achou vaga, sai do loop
+
     turmas[turma] = divisao
 
 salvarComoPlanilha()
