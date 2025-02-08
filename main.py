@@ -1,12 +1,13 @@
 import csv
 from openpyxl import Workbook
-from openpyxl.styles import Font, Alignment
+from openpyxl.styles import Font
+from openpyxl.utils import get_column_letter
 import random
 import time
 
 seed = time.time()
 random.seed(seed)
-print(seed)
+print("SEED: " + str(seed))
 
 lugares = {
     "Heitor Beltrão": 8,
@@ -27,7 +28,7 @@ def salvarComoPlanilha():
     wb.remove(wb.active)
     for turma, divisao in turmas.items():
         ws = wb.create_sheet(turma)
-        
+
         for lugar, alunos in divisao.items():
             coluna = list(divisao.keys()).index(lugar) + 1
             celulaLugar = ws.cell(row=1, column=coluna)
@@ -36,6 +37,15 @@ def salvarComoPlanilha():
 
             for i in range(0, len(alunos)):
                 ws.cell(row=i+2, column=coluna).value = alunos[i]
+
+        # https://www.jquery-az.com/auto-adjust-column-width-by-python-openpyxl/
+        for col in ws.columns:
+            length = 0
+            column = col[0].column_letter
+            for cell in col:
+                if len(str(cell.value)) > length:
+                    length = len(str(cell.value))
+            ws.column_dimensions[column].width = length - 3 # ele exagera um pouco seila
 
     ws = wb.create_sheet("stats")
 
