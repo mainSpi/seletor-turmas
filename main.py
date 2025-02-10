@@ -14,7 +14,7 @@ lugares = {
     "João Barros Neto" : 8,
     "Hesfa/Marcolino" : 10,
     "Estácio de Sá" : 8,
-    "Felippe Cardoso" : 14
+    "Felippe Cardoso" : 15
 }
 
 turmas = ["t1.csv", "t2.csv"]
