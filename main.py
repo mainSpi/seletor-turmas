@@ -11,10 +11,10 @@ print("SEED: " + str(seed))
 
 lugares = {
     "Heitor Beltrão": 8,
-    "João Barros Neto" : 10,
-    "Hesfa/Marcolino" : 12,
-    "Estácio de Sá" : 10,
-    "Felippe Cardoso" : 12
+    "João Barros Neto" : 8,
+    "Hesfa/Marcolino" : 10,
+    "Estácio de Sá" : 8,
+    "Felippe Cardoso" : 14
 }
 
 turmas = ["t1.csv", "t2.csv"]
